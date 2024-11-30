@@ -36,7 +36,7 @@ export const signInWithEmail = createAsyncThunk(
         displayName: result.user.displayName || null,
         photoURL: result.user.photoURL || null,
       };
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(error.message || "Failed to sign in via email");
     }
   }
@@ -53,7 +53,7 @@ export const registerWithEmail = createAsyncThunk(
         displayName: result.user.displayName || null,
         photoURL: result.user.photoURL || null,
       };
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(error.message || "Failed to register");
     }
   }
@@ -71,7 +71,7 @@ export const signInWithGoogle = createAsyncThunk(
         displayName: result.user.displayName,
         photoURL: result.user.photoURL,
       };
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(error.message || "Failed to sign in via gmail");
     }
   }
@@ -84,7 +84,7 @@ export const signOutUser = createAsyncThunk(
     try {
       await signOut(auth);
       return; // No data to return
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(error.message || "Failed to sign out");
     }
   }

@@ -119,8 +119,7 @@ export const MakeBudget = () => {
               })}
             />
             <FormHelperText>
-              Enter a specific purpose (e.g., "Monthly saving goals,Trip to
-              India etc")
+              Enter a specific purpose
             </FormHelperText>
           </FormControl>
           <FormControl marginTop={"15px"}>

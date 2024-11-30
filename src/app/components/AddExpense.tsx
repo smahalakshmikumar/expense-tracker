@@ -9,7 +9,6 @@ import {
   Grid,
   Flex,
   Select,
-  Heading,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -28,32 +27,19 @@ export type AddExpenseType = {
   uid: string;
 };
 
-export const AddExpense = ({onClose}:{onClose: () => void}) => {
+export const AddExpense = ({ onClose }: { onClose: () => void }) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid },
   } = useForm<AddExpenseType>({
     mode: "onChange",
   });
   const dispatch = useDispatch<AppDispatch>();
-  const { user, status, error } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth);
 
-  // const purpose = watch("purpose");
+  const { budget } = useSelector((state: RootState) => state.budget);
 
-  const {
-    budget,
-    loading: budgetLoading,
-    error: budgetError,
-  } = useSelector((state: RootState) => state.budget);
-  // const filteredBudget =
-  //   budget &&
-  //   budget.filter(
-  //     (data, index, arr) =>
-  //       arr.findIndex((obj) => obj.purpose === data.purpose) === index
-  //   );
-  // console.log(filteredBudget);
   useEffect(() => {
     dispatch(fetchBudget(user?.uid)).then((result) => {
       console.log("Fetch purpose budget:", result);

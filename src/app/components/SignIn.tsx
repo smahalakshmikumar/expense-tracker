@@ -6,11 +6,9 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Checkbox,
   Stack,
   Button,
   Heading,
-  Text,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -31,7 +29,6 @@ const SignIn: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { isValid },
   } = useForm<user>({
     mode: "onChange",
   });

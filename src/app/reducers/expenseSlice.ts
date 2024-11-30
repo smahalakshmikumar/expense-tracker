@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addDoc, collection, getDocs } from "firebase/firestore";
-import db from "../../fireStore/fireStore";
+import db from "../../fireStore/fireStoreDB";
 import { AddExpenseType } from "../components/AddExpense";
 
 // Add an expense to Firebase
@@ -17,7 +17,7 @@ export const addExpense = createAsyncThunk(
         sanitizedExpense
       );
       return { id: docRef.id, sanitizedExpense }; // Return the new expense with the Firebase ID
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(error.message || "Failed to add expense");
     }
   }
@@ -37,7 +37,7 @@ export const fetchAllExpenses = createAsyncThunk(
         expenses.push({ id: doc.id, ...(data as AddExpenseType) });
       });
       return expenses; // Return all expenses
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(
         error.message || "Failed to fetch all expenses"
       );

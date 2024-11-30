@@ -21,7 +21,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useRouter } from "next/navigation";
 import { AppDispatch } from "../store";
 import { registerWithEmail, signInWithGoogle } from "../reducers/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 export type user = {

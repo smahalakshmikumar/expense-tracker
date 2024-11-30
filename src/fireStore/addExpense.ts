@@ -1,5 +1,5 @@
 import { collection, addDoc } from "firebase/firestore";
-import db from "./firestore";
+import db from "./fireStoreDB";
 
 export const addExpense = async (expense: {
   date: string;

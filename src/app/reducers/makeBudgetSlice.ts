@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addDoc, collection, getDocs } from "firebase/firestore";
-import db from "../../fireStore/fireStore";
+import db from "../../fireStore/fireStoreDB";
 import { MakeBudgetType } from "../components/MakeBudget";
 
 export const addBudget = createAsyncThunk(
@@ -12,7 +12,7 @@ export const addBudget = createAsyncThunk(
         budget
       );
       return { id: docRef.id, ...budget }; // Return the new budget with the Firebase ID
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -33,7 +33,7 @@ export const fetchBudget = createAsyncThunk(
         } as unknown as MakeBudgetType); //to fix later
       });
       return budget;
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
