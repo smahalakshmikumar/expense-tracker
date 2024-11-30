@@ -8,11 +8,6 @@ import {
   GridItem,
   Grid,
   Flex,
-  Heading,
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   AlertDialog,
   AlertDialogBody,
   AlertDialogContent,
@@ -20,9 +15,10 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   useDisclosure,
+  Spinner,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { addBudget, fetchBudget } from "../reducers/makeBudgetSlice";
@@ -44,17 +40,19 @@ export const MakeBudget = () => {
     mode: "onChange",
   });
   const dispatch = useDispatch<AppDispatch>();
-  const { user, status, error } = useSelector((state: RootState) => state.auth);
+  const { user, status: userStatus } = useSelector(
+    (state: RootState) => state.auth
+  );
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
 
-  ///budget fetch
   useEffect(() => {
-    dispatch(fetchBudget(user?.uid)).then((result) => {
-      console.log("Fetch purpose budget:", result);
-    });
-  }, []);
+    if (user?.uid) {
+      dispatch(fetchBudget(user.uid));
+    }
+  }, [dispatch, user]);
+
   const { budget } = useSelector((state: RootState) => state.budget);
 
   const onSubmit: SubmitHandler<MakeBudgetType> = (data) => {
@@ -66,6 +64,8 @@ export const MakeBudget = () => {
     router.push("/viewExpenses");
   };
 
+  if (userStatus === "loading") return <Spinner />;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <AlertDialog
@@ -76,11 +76,13 @@ export const MakeBudget = () => {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Purpose already exists, Please click below to add/view existing
-              purpose
+              Purpose Already Exists
             </AlertDialogHeader>
+            <AlertDialogBody>
+              Please click below to add/view an existing purpose.
+            </AlertDialogBody>
             <AlertDialogFooter>
-              <Button
+            <Button
                 background="purple.600"
                 color="white"
                 variant="solid"
@@ -101,9 +103,7 @@ export const MakeBudget = () => {
       </AlertDialog>
 
       <Box display="flex" flexDirection={"column"} margin={"10px"}>
-        {/* <Heading as="h4" size={"md"}>
-          Budget Tracker
-        </Heading> */}
+      
         <Box
           display="flex"
           flexDirection={"column"}

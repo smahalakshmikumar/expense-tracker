@@ -20,6 +20,9 @@ import {
   Select,
   Heading,
   Text,
+  Spinner,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
@@ -38,7 +41,7 @@ export const ViewExpenses = () => {
     (state: RootState) => state.expenses
   );
   const { user } = useSelector((state: RootState) => state.auth);
-
+  
   const filteredAllExpenses =
     allExpenses &&
     allExpenses.filter(
@@ -48,46 +51,43 @@ export const ViewExpenses = () => {
     );
 
   useEffect(() => {
-    dispatch(fetchAllExpenses(user?.uid)).then((result) => {
-      console.log("Fetch all the expenses:", result);
-    });
-  }, [dispatch]);
+    if (user?.uid) {
+      dispatch(fetchAllExpenses(user.uid));
+      dispatch(fetchBudget(user.uid));
+    }
+  }, [dispatch, user]);
 
-  // Filtered expenses
-  const filteredExpenses =
-    selectedPurpose === "all"
-      ? allExpenses
-      : allExpenses.filter((item) => item.budgetPurpose === selectedPurpose);
+  const filteredExpenses = allExpenses.filter(
+    (item) =>
+      selectedPurpose === "all" || item.budgetPurpose === selectedPurpose
+  );
 
-  const totalExpense = allExpenses
-    .filter(
-      (item) =>
-        selectedPurpose === "all" || item.budgetPurpose === selectedPurpose
-    )
-    .reduce((acc, curr) => acc + curr.expenseAmount, 0);
+  const totalExpense = filteredExpenses.reduce(
+    (acc, curr) => acc + curr.expenseAmount,
+    0
+  );
 
-  ///budget fetch
-  useEffect(() => {
-    dispatch(fetchBudget(user?.uid)).then((result) => {
-      console.log("Fetch purpose budget:", result);
-    });
-  }, []);
   const { budget } = useSelector((state: RootState) => state.budget);
-  const totalBudget = budget.filter(
-    (data) => data.purpose === selectedPurpose
-  )[0]?.totalBudget;
+  const totalBudget =
+    budget.find((data) => data.purpose === selectedPurpose)?.totalBudget ?? 0;
 
-  if (loading === "pending") return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading === "pending") return <Spinner />;
+  if (error)
+    return (
+      <Alert status="error">
+        <AlertIcon />
+        Error: {error}
+      </Alert>
+    );
 
   return (
-    <Box padding="20px" bg="gray.50" minHeight="100vh">
+    <Box p="20px" bg="gray.50" minHeight="100vh">
       <Box
         display="flex"
         flexDirection={{ base: "column", md: "row" }}
         justifyContent="space-between"
         alignItems={{ base: "stretch", md: "center" }}
-        marginBottom="20px"
+        mb="20px"
         gap="10px"
       >
         <Button
@@ -96,6 +96,7 @@ export const ViewExpenses = () => {
           variant="solid"
           onClick={onOpen}
           width={{ base: "100%", md: "auto" }}
+          _hover={{ background: "purple.500" }}
         >
           Add New Expense
         </Button>
@@ -130,13 +131,13 @@ export const ViewExpenses = () => {
             Expense Summary
           </Heading>
           <Text fontSize="sm" color="gray.800">
-            Total Budget: {totalBudget || 0} EUR
+            Total Budget: {totalBudget} EUR
           </Text>
           <Text fontSize="sm" color="red.500">
             Total Spent: {totalExpense} EUR
           </Text>
           <Text fontSize="sm" color="green.500">
-            Available Balance: {(totalBudget || 0) - totalExpense} EUR
+            Available Balance: {totalBudget - totalExpense} EUR
           </Text>
         </Box>
       )}
@@ -147,13 +148,13 @@ export const ViewExpenses = () => {
           <ModalHeader>Add New Expense</ModalHeader>
           <ModalCloseButton />
           <ModalBody padding="20px">
-            <AddExpense onClose={onClose}/>
+            <AddExpense onClose={onClose} />
           </ModalBody>
         </ModalContent>
       </Modal>
 
       <TableContainer
-        marginTop="20px"
+        mt="20px"
         borderRadius="md"
         border="1px solid"
         borderColor="gray.200"

@@ -8,6 +8,7 @@ import { persistor, store } from "./store";
 import Layout from "./components/Layout";
 import { usePathname } from "next/navigation";
 import { PersistGate } from "redux-persist/integration/react";
+import AuthGuard from "./components/AuthGuard"; // Import your AuthGuard
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,7 +39,9 @@ export default function RootLayout({
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <ChakraProvider {...props}>
-              {!isExcluded ? <Layout>{children}</Layout> : <>{children}</>}
+              <AuthGuard>
+                {!isExcluded ? <Layout>{children}</Layout> : <>{children}</>}
+              </AuthGuard>
             </ChakraProvider>
           </PersistGate>
         </Provider>
